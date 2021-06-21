@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
-from learnabc import database, models, token
-from learnabc.hashing import Hash
+from learnabc.base import database, token
+from learnabc.routers.user import models
+from learnabc.base.hashing import Hash
 from sqlalchemy.orm import Session
 
 router = APIRouter(tags=['Authentication'])

@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
-from learnabc import models, schemas
+from learnabc import schemas
+from learnabc.routers.user import models
 from fastapi import HTTPException, status
-from learnabc.hashing import Hash
-
+from learnabc.base.hashing import Hash
 
 def create(request: schemas.User, db: Session):
     new_user = models.User(
@@ -17,5 +17,5 @@ def show(id: int, db: Session):
     user = db.query(models.User).filter(models.User.id == id).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"User with the id {id} is not available")
+                            detail=f'User with the id {id} is not available')
     return user

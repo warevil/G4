@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
-from learnabc.database import Base
+from learnabc.base.database import Base
 from sqlalchemy.orm import relationship
 
 
@@ -10,5 +10,4 @@ class User(Base):
     name = Column(String)
     email = Column(String)
     password = Column(String)
-
-    # blogs = relationship('Blog', back_populates="creator")
+		

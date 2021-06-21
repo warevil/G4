@@ -1,8 +1,9 @@
 from fastapi import APIRouter
-from learnabc import database, schemas
+from learnabc import schemas
+from learnabc.base import database
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends
-from learnabc.repository import user
+from learnabc.routers.user import queries as user
 
 router = APIRouter(
     prefix='/user',
