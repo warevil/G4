@@ -1,8 +1,7 @@
-
 from sqlalchemy.orm import Session
-from .. import models, schemas
+from learnabc import models, schemas
 from fastapi import HTTPException, status
-from ..hashing import Hash
+from learnabc.hashing import Hash
 
 
 def create(request: schemas.User, db: Session):
