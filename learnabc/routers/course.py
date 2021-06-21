@@ -25,6 +25,15 @@ def create_course(
     return "created"
 
 
+@router.post('/{id}/{user_id}', status_code=status.HTTP_201_CREATED)
+def enroll_user(id: int, user_id: int, db: Session = Depends(get_db)):
+    course = db.query(models.Course).filter_by(id=id).first()
+    user = db.query(models.User).filter_by(id=user_id).first()
+    course.users_enrolled.append(user)
+    db.commit()
+    return "done"
+
+
 @router.get('/', response_model=List[schemas.ShowCourse], status_code=status.HTTP_200_OK)
 def all_courses(db: Session = Depends(get_db)):
     courses = db.query(models.Course).all()

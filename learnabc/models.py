@@ -1,6 +1,13 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Table
 from .database import Base
 from sqlalchemy.orm import relationship
+
+
+UserCourses = Table(
+    'usercourse', Base.metadata,
+    Column('user_id', Integer, ForeignKey('users.id')),
+    Column('course_id', Integer, ForeignKey('courses.id'))
+)
 
 
 class User(Base):
@@ -11,7 +18,9 @@ class User(Base):
     email = Column(String)
     password = Column(String)
 
-    courses = relationship('Course', back_populates="creator")
+    courses_created = relationship('Course', back_populates="creator")
+    courses_enrolled = relationship(
+        'Course', secondary=UserCourses, back_populates="users_enrolled")
 
 
 class Course(Base):
@@ -21,4 +30,6 @@ class Course(Base):
     name = Column(String)
     user_id = Column(Integer, ForeignKey('users.id'))
 
-    creator = relationship('User', back_populates="courses")
+    creator = relationship('User', back_populates="courses_created")
+    users_enrolled = relationship(
+        'User', secondary=UserCourses, back_populates="courses_enrolled")

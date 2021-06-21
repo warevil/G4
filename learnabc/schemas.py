@@ -41,6 +41,7 @@ class ShowUser(BaseModel):
     name: str
     email: str
     courses: List[Course] = []
+    courses_enrolled: List[Course] = []
 
     class Config():
         orm_mode = True
@@ -50,6 +51,7 @@ class ShowCourse(BaseModel):
     id: int
     name: str
     creator: User
+    users_enrolled: List[User] = []
 
     class Config():
         orm_mode = True
