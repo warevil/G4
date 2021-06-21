@@ -1,6 +1,5 @@
 from sqlalchemy.orm import Session
-from learnabc import schemas
-from learnabc.routers.user import models
+from learnabc.routers.user import models, schemas
 from fastapi import HTTPException, status
 from learnabc.base.hashing import Hash
 
