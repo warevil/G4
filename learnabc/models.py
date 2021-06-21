@@ -11,4 +11,14 @@ class User(Base):
     email = Column(String)
     password = Column(String)
 
-    # blogs = relationship('Blog', back_populates="creator")
+    courses = relationship('Course', back_populates="creator")
+
+
+class Course(Base):
+    __tablename__ = 'courses'
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String)
+    user_id = Column(Integer, ForeignKey('users.id'))
+
+    creator = relationship('User', back_populates="courses")
