@@ -13,11 +13,18 @@ class RequestUser(BaseModel):
         orm_mode = True
 
 
+class InscriptionCourse(BaseModel):
+    course: Course
+
+    class Config():
+        orm_mode = True
+
+
 class ShowUser(BaseModel):
     name: str
     email: str
-    courses: List[Course] = []
-    courses_enrolled: List[Course] = []
+    courses_created: List[Course] = []
+    inscriptions: List[InscriptionCourse] = []
 
     class Config():
         orm_mode = True

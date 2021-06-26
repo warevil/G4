@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from typing import List
 from .. import database, models, schemas
 # from ..schemas import course, user, base
 from sqlalchemy.orm import Session
@@ -16,6 +17,12 @@ get_db = database.get_db
 @router.post('/', response_model=schemas.user.ShowUser)
 def create_user(request: schemas.user.RequestUser, db: Session = Depends(get_db)):
     return user.create(request, db)
+
+
+@router.get('/', response_model=List[schemas.user.ShowUser], status_code=status.HTTP_200_OK)
+def all_users(db: Session = Depends(get_db)):
+    users = db.query(models.User).all()
+    return users
 
 
 @router.get('/{id}', response_model=schemas.user.ShowUser)

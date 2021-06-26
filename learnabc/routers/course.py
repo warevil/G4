@@ -20,7 +20,12 @@ def create_course(
         db: Session = Depends(get_db),
         current_user: schemas.base.User = Depends(oauth2.get_current_user)):
 
-    new_course = models.Course(name=request.name, user_id=current_user.id)
+    new_course = models.Course(
+        name=request.name,
+        description=request.description,
+        user_id=current_user.id
+    )
+
     db.add(new_course)
     db.commit()
     return "created"
@@ -30,7 +35,9 @@ def create_course(
 def enroll_user(id: int, user_id: int, db: Session = Depends(get_db)):
     course = db.query(models.Course).filter_by(id=id).first()
     user = db.query(models.User).filter_by(id=user_id).first()
-    course.users_enrolled.append(user)
+    # course.users_enrolled.append(user)
+    inscription = models.Inscription(user=user, course=course)
+    db.add(inscription)
     db.commit()
     return "done"
 

@@ -6,6 +6,14 @@ from .base import User
 
 class RequestCourse(BaseModel):
     name: str
+    description: str
+
+    class Config():
+        orm_mode = True
+
+
+class InscriptionUser(BaseModel):
+    user: User
 
     class Config():
         orm_mode = True
@@ -14,8 +22,9 @@ class RequestCourse(BaseModel):
 class ShowCourse(BaseModel):
     id: int
     name: str
+    description: str
     creator: User
-    users_enrolled: List[User] = []
+    inscriptions: List[InscriptionUser] = []
 
     class Config():
         orm_mode = True
