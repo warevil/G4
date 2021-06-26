@@ -1,7 +1,8 @@
 from hashlib import new
 from typing import List
 from fastapi import APIRouter, Depends, status, HTTPException
-from .. import schemas, database, models, oauth2
+from .. import database, models, oauth2, schemas
+# from ..schemas import course, user, base
 from sqlalchemy.orm import Session
 # from ..repository import blog
 
@@ -15,9 +16,9 @@ get_db = database.get_db
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
 def create_course(
-        request: schemas.RequestCourse,
+        request: schemas.course.RequestCourse,
         db: Session = Depends(get_db),
-        current_user: schemas.User = Depends(oauth2.get_current_user)):
+        current_user: schemas.base.User = Depends(oauth2.get_current_user)):
 
     new_course = models.Course(name=request.name, user_id=current_user.id)
     db.add(new_course)
@@ -34,13 +35,13 @@ def enroll_user(id: int, user_id: int, db: Session = Depends(get_db)):
     return "done"
 
 
-@router.get('/', response_model=List[schemas.ShowCourse], status_code=status.HTTP_200_OK)
+@router.get('/', response_model=List[schemas.course.ShowCourse], status_code=status.HTTP_200_OK)
 def all_courses(db: Session = Depends(get_db)):
     courses = db.query(models.Course).all()
     return courses
 
 
-@router.get('/{id}', response_model=schemas.ShowCourse, status_code=status.HTTP_200_OK)
+@router.get('/{id}', response_model=schemas.course.ShowCourse, status_code=status.HTTP_200_OK)
 def get_course(
         id: int,
         db: Session = Depends(get_db)):
