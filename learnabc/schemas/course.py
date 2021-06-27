@@ -28,3 +28,7 @@ class ShowCourse(BaseModel):
 
     class Config():
         orm_mode = True
+
+
+class CalificationRequest(BaseModel):
+    calification: int

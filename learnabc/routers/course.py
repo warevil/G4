@@ -28,14 +28,13 @@ def create_course(
 
     db.add(new_course)
     db.commit()
-    return "created"
+    return {"id": new_course.id}
 
 
 @router.post('/{id}/{user_id}', status_code=status.HTTP_201_CREATED)
 def enroll_user(id: int, user_id: int, db: Session = Depends(get_db)):
     course = db.query(models.Course).filter_by(id=id).first()
     user = db.query(models.User).filter_by(id=user_id).first()
-    # course.users_enrolled.append(user)
     inscription = models.Inscription(user=user, course=course)
     db.add(inscription)
     db.commit()
@@ -68,3 +67,17 @@ def delete(
     course.delete(synchronize_session=False)
     db.commit()
     return "deleted"
+
+
+@router.post('/{id}/calification/{user_id}', status_code=status.HTTP_200_OK)
+def calificate(id: int, user_id: int,
+               request: schemas.course.CalificationRequest,
+               db: Session = Depends(get_db)):
+    course = db.query(models.Course).filter_by(id=id).first()
+    user = db.query(models.User).filter_by(id=user_id).first()
+
+    inscription = db.query(models.Inscription).filter_by(
+        course=course, user=user).first()
+    inscription.calification = request.calification
+    db.commit()
+    return "done"
