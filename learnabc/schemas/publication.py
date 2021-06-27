@@ -1,6 +1,6 @@
 from typing import List, Optional
-from pydantic import BaseModel
-from .base import Course
+from pydantic import BaseModel, validator
+from .base import Course, Evaluation
 from datetime import date, time
 
 
@@ -8,49 +8,36 @@ class RequestAnnouncement(BaseModel):
     title: str
     description: str
 
-    class Config():
-        orm_mode = True
-
 
 class RequestAssignment(BaseModel):
     title: str
     description: str
     date_max: date
     time_max: time
-
-    class Config():
-        orm_mode = True
+    group: bool
 
 
-class ShowPublication(BaseModel):
-    id: int
+class RequestExam(BaseModel):
     title: str
     description: str
-    date: date
-    time: time
-    type: int
-    course: Course
-
-    class Config():
-        orm_mode = True
-
-
-class ShowPublication(BaseModel):
-    id: int
-    title: str
-    description: str
-    date: date
-    time: time
-    type: int
-    course: Course
-
-    class Config():
-        orm_mode = True
-
-
-class Evaluation(BaseModel):
     date_max: date
     time_max: time
+
+
+class ShowPublication(BaseModel):
+    id: int
+    title: str
+    description: str
+    date: date
+    time: time
+    type: int
+    course: Course
+    evaluation: Optional[Evaluation]
+
+    @validator('evaluation')
+    def validate_evaluation(cls, v):
+        if v is not None:
+            return v
 
     class Config():
         orm_mode = True
@@ -63,7 +50,7 @@ class ShowAssignment(BaseModel):
     date: date
     time: time
     type: int
-    course: Course
+    # course: Course
     evaluation: Evaluation
 
     class Config():

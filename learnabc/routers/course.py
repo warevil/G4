@@ -41,10 +41,27 @@ def enroll_user(id: int, user_id: int, db: Session = Depends(get_db)):
     return "done"
 
 
+@router.post('/{id}/delegate/{user_id}', status_code=status.HTTP_201_CREATED)
+def delegate_user(id: int, user_id: int, db: Session = Depends(get_db)):
+    course = db.query(models.Course).filter_by(id=id).first()
+    user = db.query(models.User).filter_by(id=user_id).first()
+    course.delegate = user
+    db.commit()
+    return "done"
+
+
 @router.get('/', response_model=List[schemas.course.ShowCourse], status_code=status.HTTP_200_OK)
 def all_courses(db: Session = Depends(get_db)):
     courses = db.query(models.Course).all()
     return courses
+
+
+@router.get('/{id}/inscriptions', response_model=List[schemas.course.InscriptionUser], status_code=status.HTTP_200_OK)
+def get_inscriptions(
+        id: int,
+        db: Session = Depends(get_db)):
+    course = db.query(models.Course).filter_by(id=id).first()
+    return course.inscriptions
 
 
 @router.get('/{id}', response_model=schemas.course.ShowCourse, status_code=status.HTTP_200_OK)

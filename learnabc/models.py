@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Date, Time
+from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, Date, Time
 from .database import Base
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -26,9 +26,12 @@ class User(Base):
     email = Column(String)
     password = Column(String)
 
-    courses_created = relationship('Course', back_populates="creator")
     inscriptions = relationship("Inscription", back_populates="user")
     submissions = relationship("Submission", back_populates="user")
+    courses_created = relationship(
+        'Course', back_populates="creator", primaryjoin="User.id==Course.user_id")
+    courses_delegate = relationship(
+        'Course', back_populates="delegate", primaryjoin="User.id==Course.delegate_id")
 
     def __repr__(self):
         return f"<User(name= {self.name})>"
@@ -41,11 +44,15 @@ class Course(Base):
     name = Column(String)
     description = Column(String)
 
+    delegate_id = Column(Integer, ForeignKey('users.id'))
     user_id = Column(Integer, ForeignKey('users.id'))
 
-    creator = relationship('User', back_populates="courses_created")
     inscriptions = relationship("Inscription", back_populates="course")
     publications = relationship("Publication", back_populates="course")
+    delegate = relationship(
+        'User', back_populates='courses_delegate', foreign_keys=delegate_id)
+    creator = relationship(
+        'User', back_populates="courses_created", foreign_keys=user_id)
 
     def __repr__(self):
         return f"<Course(name= {self.name})>"
@@ -59,7 +66,8 @@ class Publication(Base):
     time = Column(Time, default=datetime.now().time())
     description = Column(String)
     title = Column(String)
-    type = Column(Integer, default=1)  # 1: Anuncio, 2: Material, 3: Tarea
+    # 1: Anuncio, 2: Material, 3: Tarea, 4:Examen
+    type = Column(Integer, default=1)
 
     course_id = Column(Integer, ForeignKey('courses.id'))
     evaluation_id = Column(Integer, ForeignKey('evaluations.id'))
@@ -74,8 +82,7 @@ class Evaluation(Base):
     id = Column(Integer, primary_key=True, index=True)
     date_max = Column(Date)
     time_max = Column(Time)
-
-    # publication_id = Column(Integer, ForeignKey('publications.id'))
+    group = Column(Boolean, default=False)
 
     publication = relationship(
         "Publication", back_populates="evaluation", uselist=False)

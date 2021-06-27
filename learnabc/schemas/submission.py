@@ -1,4 +1,4 @@
-from learnabc.schemas.publication import ShowAssignment
+# from learnabc.schemas.publication import ShowAssignment
 from typing import List, Optional
 from pydantic import BaseModel
 from .base import Course, User, Assignment
@@ -10,8 +10,21 @@ class RequestSubmission(BaseModel):
     publication_id: int
 
 
+class ShowAssignment(BaseModel):
+    id: int
+    title: str
+    description: str
+    date: date
+    time: time
+    type: int
+    course: Course
+
+    class Config():
+        orm_mode = True
+
+
 class ShowEvaluation(BaseModel):
-    publication: Assignment
+    publication: ShowAssignment
     date_max: date
     time_max: time
 
