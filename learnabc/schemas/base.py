@@ -4,9 +4,14 @@ from pydantic import BaseModel, validator
 from datetime import date, time
 
 
+class CourseCode(BaseModel):
+    code: str
+
+
 class Evaluation(BaseModel):
     date_max: date
     time_max: time
+    score_max: int
     group: bool
 
     class Config():

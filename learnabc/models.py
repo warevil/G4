@@ -25,6 +25,7 @@ class User(Base):
     name = Column(String)
     email = Column(String)
     password = Column(String)
+    oauth = Column(Boolean)
 
     inscriptions = relationship("Inscription", back_populates="user")
     submissions = relationship("Submission", back_populates="user")
@@ -43,6 +44,7 @@ class Course(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     description = Column(String)
+    code = Column(String)
 
     delegate_id = Column(Integer, ForeignKey('users.id'))
     user_id = Column(Integer, ForeignKey('users.id'))
@@ -82,6 +84,7 @@ class Evaluation(Base):
     id = Column(Integer, primary_key=True, index=True)
     date_max = Column(Date)
     time_max = Column(Time)
+    score_max = Column(Integer)
     group = Column(Boolean, default=False)
 
     publication = relationship(

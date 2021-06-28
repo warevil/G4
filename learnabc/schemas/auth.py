@@ -13,5 +13,9 @@ class Token(BaseModel):
     token_type: str
 
 
+class TokenOAuth(BaseModel):
+    token: str
+
+
 class TokenData(BaseModel):
     email: Optional[str] = None

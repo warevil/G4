@@ -73,6 +73,7 @@ def create_assignment(
         evaluation=models.Evaluation(
             date_max=request.date_max,
             time_max=request.time_max,
+            score_max=request.score_max,
             group=request.group
         )
     )
@@ -99,6 +100,7 @@ def create_exam(
         evaluation=models.Evaluation(
             date_max=request.date_max,
             time_max=request.time_max,
+            score_max=request.score_max,
             group=False,
         )
     )
@@ -155,6 +157,23 @@ def get_course_assignments(course_id: int, db: Session = Depends(get_db)):
 
     publications = db.query(models.Publication).filter_by(
         type=3, course_id=course_id).all()
+
+    return publications
+
+
+@router.get('/exam', response_model=List[schemas.publication.ShowPublication], status_code=status.HTTP_201_CREATED)
+def get_exams(db: Session = Depends(get_db)):
+
+    publications = db.query(models.Publication).filter_by(type=4).all()
+
+    return publications
+
+
+@router.get('/exam/{course_id}', response_model=List[schemas.base.Publication], status_code=status.HTTP_201_CREATED)
+def get_course_exams(course_id: int, db: Session = Depends(get_db)):
+
+    publications = db.query(models.Publication).filter_by(
+        type=4, course_id=course_id).all()
 
     return publications
 

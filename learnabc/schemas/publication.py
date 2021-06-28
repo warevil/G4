@@ -14,6 +14,7 @@ class RequestAssignment(BaseModel):
     description: str
     date_max: date
     time_max: time
+    score_max: int
     group: bool
 
 
@@ -22,6 +23,7 @@ class RequestExam(BaseModel):
     description: str
     date_max: date
     time_max: time
+    score_max: int
 
 
 class ShowPublication(BaseModel):
