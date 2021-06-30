@@ -3,6 +3,10 @@ from .database import Base
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
+"""
+TODO implement CASCADE deletes
+"""
+
 
 class Inscription(Base):
     __tablename__ = 'inscriptions'

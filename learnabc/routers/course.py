@@ -11,6 +11,10 @@ router = APIRouter(
 
 get_db = database.get_db
 
+"""
+TODO protect endpoints, verify user not modify fields of other user
+"""
+
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
 def create_course(
@@ -128,8 +132,18 @@ def delete(
     if not course.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Blog with id {id} not found")
+    course = course.first()
 
-    course.delete(synchronize_session=False)
+    # TODO delete with CASCADE
+
+    for ins in course.inscriptions:
+        db.delete(ins)
+    for pub in course.publications:
+        for sub in pub.evaluation.submissions:
+            db.delete(sub)
+        db.delete(pub.evaluation)
+        db.delete(pub)
+    db.delete(course)
     db.commit()
     return "deleted"
 
