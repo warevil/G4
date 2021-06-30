@@ -14,6 +14,7 @@ fastapi==0.65.2
 google-auth==1.32.0
 google-oauth==1.0.1
 greenlet==1.1.0
+gunicorn==20.1.0
 h11==0.12.0
 idna==2.10
 importlib-metadata==4.5.0
