@@ -1,6 +1,6 @@
 from learnabc.database import Base
 from typing import List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from .base import Course
 
 

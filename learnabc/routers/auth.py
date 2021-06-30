@@ -30,7 +30,6 @@ def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(
 @router.post('/verify_oauth_token')
 def verify(request: schemas.auth.TokenOAuth, db: Session = Depends(database.get_db)):
     CLIENT_ID = "204095740277-8khgna7ci9g251auvrsn4mvdrgjgup1i.apps.googleusercontent.com"
-    print("request: " + request.token)
     try:
         user_token = request.token
         idinfo = id_token.verify_oauth2_token(
@@ -45,4 +44,3 @@ def verify(request: schemas.auth.TokenOAuth, db: Session = Depends(database.get_
         return access_token
     except ValueError:
         return "OAuth Error: Invalid Token"
-        # return jsonify(success=False)

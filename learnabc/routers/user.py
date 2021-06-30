@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from typing import List
 from .. import database, models, schemas
 # from ..schemas import course, user, base
@@ -28,3 +28,12 @@ def all_users(db: Session = Depends(get_db)):
 @router.get('/{id}', response_model=schemas.user.ShowUser)
 def get_user(id: int, db: Session = Depends(get_db)):
     return user.show(id, db)
+
+
+@router.get('/byemail/{email}', response_model=schemas.user.ShowUser)
+def get_user_by_email(email: str, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter_by(email=email).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"User with the email {email} is not available")
+    return user
