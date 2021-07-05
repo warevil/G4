@@ -41,17 +41,23 @@ def create_course(
     return {"id": new_course.id}
 
 
-@router.post('/{course_code}', status_code=status.HTTP_201_CREATED)
+@router.post('/{course_code}/enroll_me', status_code=status.HTTP_201_CREATED)
 def enroll_me(
         course_code: str,
         db: Session = Depends(get_db),
         current_user: schemas.base.User = Depends(oauth2.get_current_user)):
 
     course = db.query(models.Course).filter_by(code=course_code).first()
+    inscription = db.query(models.Inscription).filter_by(
+        user_id=current_user.id, course_id=course.id).first()
 
     if not course:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"course or user does not exists!")
+                            detail=f"course does not exists!")
+
+    if inscription:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"the user is already enrolled")
 
     inscription = models.Inscription(user_id=current_user.id, course=course)
 
@@ -61,15 +67,20 @@ def enroll_me(
     return "done"
 
 
-@router.post('/{id}/{user_id}', status_code=status.HTTP_201_CREATED)
+@router.post('/{id}/enroll/by_id{user_id}', status_code=status.HTTP_201_CREATED)
 def enroll_user(id: int, user_id: int, db: Session = Depends(get_db)):
 
     course = db.query(models.Course).filter_by(id=id).first()
     user = db.query(models.User).filter_by(id=user_id).first()
+    inscription = db.query(models.Inscription).filter_by(
+        user_id=user_id, course_id=id).first()
 
     if not course or not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"course or user does not exists!")
+    if inscription:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"the user is already enrolled")
 
     inscription = models.Inscription(user=user, course=course)
     db.add(inscription)
@@ -77,15 +88,21 @@ def enroll_user(id: int, user_id: int, db: Session = Depends(get_db)):
     return "done"
 
 
-@router.post('/{id}', status_code=status.HTTP_201_CREATED)
-def enroll_user_by_email(id: int, request: schemas.course.UserEmail, db: Session = Depends(get_db)):
+@router.post('/{id}/enroll/by_email/{email}', status_code=status.HTTP_201_CREATED)
+def enroll_user_by_email(id: int, email: str, db: Session = Depends(get_db)):
 
     course = db.query(models.Course).filter_by(id=id).first()
-    user = db.query(models.User).filter_by(email=request.email).first()
+    user = db.query(models.User).filter_by(email=email).first()
+    inscription = db.query(models.Inscription).filter_by(
+        user_id=user.id, course_id=id).first()
 
     if not course or not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"course or user does not exists!")
+
+    if inscription:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"the user is already enrolled")
 
     inscription = models.Inscription(user=user, course=course)
     db.add(inscription)
@@ -120,6 +137,20 @@ def delegate_user(id: int, user_id: int, db: Session = Depends(get_db)):
 #     course.code = request.code
 #     db.commit()
 #     return "done"
+
+
+@router.post('/{id}/calification/{user_id}', status_code=status.HTTP_200_OK)
+def calificate(id: int, user_id: int,
+               request: schemas.course.CalificationRequest,
+               db: Session = Depends(get_db)):
+    course = db.query(models.Course).filter_by(id=id).first()
+    user = db.query(models.User).filter_by(id=user_id).first()
+
+    inscription = db.query(models.Inscription).filter_by(
+        course=course, user=user).first()
+    inscription.calification = request.calification
+    db.commit()
+    return "done"
 
 
 @router.get('/{id}/code', status_code=status.HTTP_201_CREATED)
@@ -202,18 +233,4 @@ def delete(
     db.delete(course)
     db.commit()
 
-    return "done"
-
-
-@router.post('/{id}/calification/{user_id}', status_code=status.HTTP_200_OK)
-def calificate(id: int, user_id: int,
-               request: schemas.course.CalificationRequest,
-               db: Session = Depends(get_db)):
-    course = db.query(models.Course).filter_by(id=id).first()
-    user = db.query(models.User).filter_by(id=user_id).first()
-
-    inscription = db.query(models.Inscription).filter_by(
-        course=course, user=user).first()
-    inscription.calification = request.calification
-    db.commit()
     return "done"
