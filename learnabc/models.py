@@ -181,7 +181,7 @@ class Comment(Base):
         ForeignKey('users.id'))
 
     parent_id = Column(
-        String,
+        Integer,
         ForeignKey('comments.id'))
 
     user = relationship('User')
