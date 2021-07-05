@@ -1,1 +1,1 @@
-from . import auth, user, course, base, publication, submission
+from . import auth, user, course, base, publication, submission, comment

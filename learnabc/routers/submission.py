@@ -23,7 +23,11 @@ def create(
     evaluation = db.query(models.Evaluation).filter_by(
         publication=publication).first()
 
-    submission = models.Submission(evaluation=evaluation, user=current_user)
+    submission = models.Submission(
+        evaluation=evaluation,
+        user_id=current_user.id
+    )
+
     db.add(submission)
     db.commit()
 

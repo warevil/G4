@@ -1,4 +1,6 @@
 from hashlib import new
+import random
+import string
 from typing import List
 from fastapi import APIRouter, Depends, status, HTTPException
 from .. import database, models, oauth2, schemas
@@ -30,7 +32,33 @@ def create_course(
 
     db.add(new_course)
     db.commit()
+
+    new_course.code = str(new_course.id) + ''.join(random.choice(string.ascii_uppercase)
+                                                   for i in range(6))
+
+    db.commit()
+
     return {"id": new_course.id}
+
+
+@router.post('/{course_code}', status_code=status.HTTP_201_CREATED)
+def enroll_me(
+        course_code: str,
+        db: Session = Depends(get_db),
+        current_user: schemas.base.User = Depends(oauth2.get_current_user)):
+
+    course = db.query(models.Course).filter_by(code=course_code).first()
+
+    if not course:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"course or user does not exists!")
+
+    inscription = models.Inscription(user_id=current_user.id, course=course)
+
+    db.add(inscription)
+    db.commit()
+
+    return "done"
 
 
 @router.post('/{id}/{user_id}', status_code=status.HTTP_201_CREATED)
@@ -67,6 +95,7 @@ def enroll_user_by_email(id: int, request: schemas.course.UserEmail, db: Session
 
 @router.post('/{id}/delegate/{user_id}', status_code=status.HTTP_201_CREATED)
 def delegate_user(id: int, user_id: int, db: Session = Depends(get_db)):
+
     course = db.query(models.Course).filter_by(id=id).first()
     user = db.query(models.User).filter_by(id=user_id).first()
 
@@ -79,21 +108,54 @@ def delegate_user(id: int, user_id: int, db: Session = Depends(get_db)):
     return "done"
 
 
-@router.post('/{id}/code', status_code=status.HTTP_201_CREATED)
-def set_code(id: int, request: schemas.base.CourseCode, db: Session = Depends(get_db)):
+# @router.post('/{id}/code', status_code=status.HTTP_201_CREATED)
+# def set_code(id: int, request: schemas.base.CourseCode, db: Session = Depends(get_db)):
+
+#     course = db.query(models.Course).filter_by(id=id).first()
+
+#     if not course:
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+#                             detail=f"Course with id {id} not found")
+
+#     course.code = request.code
+#     db.commit()
+#     return "done"
+
+
+@router.get('/{id}/code', status_code=status.HTTP_201_CREATED)
+def get_code(id: int, db: Session = Depends(get_db)):
+
     course = db.query(models.Course).filter_by(id=id).first()
 
     if not course:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"course does not exists!")
+                            detail=f"Course with id {id} not found")
 
-    course.code = request.code
+    return course.code
+
+
+@router.get('/{id}/new_code', status_code=status.HTTP_201_CREATED)
+def get_new_code(id: int, db: Session = Depends(get_db)):
+
+    course = db.query(models.Course).filter_by(id=id).first()
+
+    if not course:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Course with id {id} not found")
+
+    new_code = str(course.id) + ''.join(random.choice(string.ascii_uppercase)
+                                        for i in range(6))
+
+    course.code = new_code
+
     db.commit()
-    return "done"
+
+    return course.code
 
 
 @router.get('/', response_model=List[schemas.course.ShowCourse], status_code=status.HTTP_200_OK)
 def all_courses(db: Session = Depends(get_db)):
+
     courses = db.query(models.Course).all()
     return courses
 
@@ -102,11 +164,12 @@ def all_courses(db: Session = Depends(get_db)):
 def get_inscriptions(
         id: int,
         db: Session = Depends(get_db)):
+
     course = db.query(models.Course).filter_by(id=id).first()
 
     if not course:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"course does not exists!")
+                            detail=f"Course with id {id} not found")
 
     return course.inscriptions
 
@@ -115,11 +178,12 @@ def get_inscriptions(
 def get_course(
         id: int,
         db: Session = Depends(get_db)):
+
     course = db.query(models.Course).filter_by(id=id).first()
 
     if not course:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"course does not exists!")
+                            detail=f"Course with id {id} not found")
 
     return course
 
@@ -128,24 +192,17 @@ def get_course(
 def delete(
         id: int,
         db: Session = Depends(get_db)):
-    course = db.query(models.Course).filter_by(id=id)
-    if not course.first():
+
+    course = db.query(models.Course).filter_by(id=id).first()
+
+    if not course:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"Blog with id {id} not found")
-    course = course.first()
+                            detail=f"Course with id {id} not found")
 
-    # TODO delete with CASCADE
-
-    for ins in course.inscriptions:
-        db.delete(ins)
-    for pub in course.publications:
-        for sub in pub.evaluation.submissions:
-            db.delete(sub)
-        db.delete(pub.evaluation)
-        db.delete(pub)
     db.delete(course)
     db.commit()
-    return "deleted"
+
+    return "done"
 
 
 @router.post('/{id}/calification/{user_id}', status_code=status.HTTP_200_OK)

@@ -65,6 +65,10 @@ def create_assignment(
 
     course = db.query(models.Course).filter_by(id=id_course).first()
 
+    if not course:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Course with id {id_course} not found")
+
     new_assignment = models.Publication(
         title=request.title,
         description=request.description,
@@ -108,6 +112,44 @@ def create_exam(
     db.add(new_assignment)
     db.commit()
     return {"id": new_assignment.id}
+
+
+@router.post('/{id}/comment', status_code=status.HTTP_201_CREATED)
+def post_comment(
+        id: int,
+        request: schemas.comment.RequestComment,
+        db: Session = Depends(get_db),
+        current_user: schemas.base.User = Depends(oauth2.get_current_user)):
+
+    new_comment = models.Comment(
+        content=request.content,
+        user_id=current_user.id,
+        publication_id=id
+    )
+
+    db.add(new_comment)
+    db.commit()
+
+    return "done"
+
+
+@router.post('/{id}/comment', status_code=status.HTTP_201_CREATED)
+def post_comment(
+        id: int,
+        request: schemas.comment.RequestComment,
+        db: Session = Depends(get_db),
+        current_user: schemas.base.User = Depends(oauth2.get_current_user)):
+
+    new_comment = models.Comment(
+        content=request.content,
+        user_id=current_user.id,
+        publication_id=id
+    )
+
+    db.add(new_comment)
+    db.commit()
+
+    return "done"
 
 
 @router.get('/announcement', response_model=List[schemas.publication.ShowPublication], status_code=status.HTTP_201_CREATED)
@@ -186,8 +228,8 @@ def get_publications(db: Session = Depends(get_db)):
     return publications
 
 
-@router.get('/{course_id}', response_model=List[schemas.base.Publication], status_code=status.HTTP_201_CREATED)
-def get_publications(course_id: int, db: Session = Depends(get_db)):
+@router.get('/{course_id}', response_model=List[schemas.publication.ShowPublication], status_code=status.HTTP_201_CREATED)
+def get_course_publications(course_id: int, db: Session = Depends(get_db)):
 
     publications = db.query(models.Publication).filter_by(
         course_id=course_id).all()
@@ -196,9 +238,7 @@ def get_publications(course_id: int, db: Session = Depends(get_db)):
 
 
 @router.get('/{id}', response_model=schemas.publication.ShowPublication, status_code=status.HTTP_201_CREATED)
-def get_publication(
-        id: int,
-        db: Session = Depends(get_db)):
+def get_publication(id: int, db: Session = Depends(get_db)):
 
     publication = db.query(models.Publication).filter_by(id=id).first()
 

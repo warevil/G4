@@ -1,4 +1,3 @@
-from learnabc.database import Base
 from typing import List, Optional
 from pydantic import BaseModel, validator
 from datetime import date, time
@@ -8,11 +7,34 @@ class CourseCode(BaseModel):
     code: str
 
 
+class User(BaseModel):
+    id: int
+    name: str
+    email: str
+    # password: str
+
+    class Config():
+        orm_mode = True
+
+
+class Comment(BaseModel):
+    id: int
+    user: User
+    content: str
+    date: date
+    time: time
+
+    class Config():
+        orm_mode = True
+
+
 class Evaluation(BaseModel):
+    id: int
     date_max: date
     time_max: time
     score_max: int
     group: bool
+    comments: List[Comment] = []
 
     class Config():
         orm_mode = True
@@ -27,22 +49,22 @@ class Course(BaseModel):
         orm_mode = True
 
 
-class User(BaseModel):
-    id: int
-    name: str
-    email: str
-    # password: str
-
-    class Config():
-        orm_mode = True
-
-
 class Assignment(BaseModel):
     id: int
     title: str
     description: str
     date: date
     time: time
+    type: int
+    comments: List[Comment] = []
+
+    class Config():
+        orm_mode = True
+
+
+class CommentReaction(BaseModel):
+    id: int
+    user: User
     type: int
 
     class Config():
@@ -56,6 +78,7 @@ class Publication(BaseModel):
     date: date
     time: time
     type: int
+    comments: List[Comment] = []
     evaluation: Optional[Evaluation]
 
     @validator('evaluation')

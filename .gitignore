@@ -1,5 +1,7 @@
 .vscode
 ngrok.exe
+test_database.py
+*.pu
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

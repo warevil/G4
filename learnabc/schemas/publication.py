@@ -1,3 +1,4 @@
+from learnabc.schemas.comment import ShowCommentPublication
 from typing import List, Optional
 from pydantic import BaseModel, validator
 from .base import Course, Evaluation
@@ -34,6 +35,7 @@ class ShowPublication(BaseModel):
     time: time
     type: int
     course: Course
+    comments: List[ShowCommentPublication] = []
     evaluation: Optional[Evaluation]
 
     @validator('evaluation')
