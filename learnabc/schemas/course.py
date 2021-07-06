@@ -1,7 +1,7 @@
 from learnabc.database import Base
 from typing import List, Optional, Union
 from pydantic import BaseModel, validator
-from .base import User
+from .base import Group, User
 
 
 class UserEmail(BaseModel):
@@ -29,6 +29,7 @@ class ShowCourse(BaseModel):
     code: Optional[str]
     delegate: Optional[User]
     inscriptions: List[InscriptionUser] = []
+    groups: List[Group] = []
 
     @validator('delegate')
     def valid_delegate(cls, v):

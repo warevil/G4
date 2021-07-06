@@ -1,3 +1,4 @@
+from os import name
 from typing import List, Optional
 from pydantic import BaseModel, validator
 from datetime import date, time
@@ -12,6 +13,23 @@ class User(BaseModel):
     name: str
     email: str
     # password: str
+
+    class Config():
+        orm_mode = True
+
+
+class GroupInscriptons(BaseModel):
+    user: User
+
+    class Config():
+        orm_mode = True
+
+
+class Group(BaseModel):
+    id: int
+    name: str
+    locked: bool
+    inscriptions: List[GroupInscriptons]
 
     class Config():
         orm_mode = True

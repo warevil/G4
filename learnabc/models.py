@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, Date, Time
+from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, Date, Time, false
 from .database import Base
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -17,12 +17,30 @@ class Inscription(Base):
 
     course_id = Column(Integer, ForeignKey('courses.id'), primary_key=True)
 
-    user = relationship("User", back_populates="inscriptions")
+    group_id = Column(Integer, ForeignKey('groups.id'))
 
-    course = relationship("Course", back_populates="inscriptions")
+    user = relationship('User', back_populates='inscriptions')
+
+    course = relationship('Course', back_populates='inscriptions')
+
+    group = relationship('Group', back_populates='inscriptions')
 
     def __repr__(self):
         return f"<Inscription(user= {self.user.name}, course= {self.course.name}, calification= {self.calification})>"
+
+
+class Group(Base):
+    __tablename__ = 'groups'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, default="Unknow")
+    locked = Column(Boolean, default=False)
+
+    course_id = Column(Integer, ForeignKey('courses.id'), nullable=False)
+
+    course = relationship('Course', back_populates='groups')
+
+    inscriptions = relationship('Inscription', back_populates='group')
 
 
 class User(Base):
@@ -115,6 +133,12 @@ class Course(Base):
     publications = relationship(
         "Publication",
         back_populates="course",
+        cascade="delete, merge, save-update"
+    )
+
+    groups = relationship(
+        'Group',
+        back_populates='course',
         cascade="delete, merge, save-update"
     )
 
