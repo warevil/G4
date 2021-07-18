@@ -94,7 +94,7 @@ def lock_group(course_id: int, db: Session = Depends(get_db)):
     return 'done'
 
 
-@router.get('/group/{course_id}', response_model=List[schemas.base.Group])
+@router.get('/{course_id}', response_model=List[schemas.base.Group])
 def get_course_groups(course_id: int, db: Session = Depends(get_db)):
     course = db.query(models.Course).filter_by(id=course_id).first()
     if not course:
@@ -103,7 +103,7 @@ def get_course_groups(course_id: int, db: Session = Depends(get_db)):
     return course.groups
 
 
-@router.get('/group/inscriptions/{group_id}', response_model=List[schemas.base.GroupInscriptons])
+@router.get('/inscriptions/{group_id}', response_model=List[schemas.base.GroupInscriptons])
 def get_inscriptions(group_id: int, db: Session = Depends(get_db)):
     group = db.query(models.Group).filter_by(id=group_id).first()
     if not group:
