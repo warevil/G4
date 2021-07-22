@@ -1,3 +1,5 @@
+from learnabc import models
+from learnabc.token import create_access_token
 from ..app import app
 from ..database import Base, get_db
 from fastapi.testclient import TestClient
@@ -34,6 +36,11 @@ class UserTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.client = TestClient(app)
+        cls.user_test = {
+            "name": "user_test",
+            "email": "ut@test.com",
+            "password": "pwd"
+        }
 
     @staticmethod
     def disconnect():
@@ -47,11 +54,7 @@ class UserTestCase(unittest.TestCase):
     def test_create_user(self):
         response = self.client.post(
             "/user/",
-            json={
-                "name": "user_test",
-                "email": "ut@test.com",
-                "password": "pwd"
-            },
+            json=self.user_test,
         )
         assert response.status_code == 200, response.text
         data = response.json()
@@ -64,8 +67,8 @@ class UserTestCase(unittest.TestCase):
         response = self.client.post(
             '/login',
             data={
-                'username': 'ut@test.com',
-                'password': 'pwd'
+                'username': self.user_test['email'],
+                'password': self.user_test['password']
             },
         )
 
@@ -73,7 +76,6 @@ class UserTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(data.get('access_token'))
-        self.access_token = data.get('access_token')
         self.assertEqual(data.get('token_type'), 'bearer')
 
         # Test invalid password
@@ -81,7 +83,7 @@ class UserTestCase(unittest.TestCase):
         response = self.client.post(
             '/login',
             data={
-                'username': 'ut@test.com',
+                'username': self.user_test['email'],
                 'password': 'jakia2'
             },
         )
@@ -109,7 +111,7 @@ class UserTestCase(unittest.TestCase):
         # Existing user
 
         response = self.client.get(
-            '/user/byemail/ut@test.com',
+            f'/user/byemail/{self.user_test["email"]}',
         )
 
         data = response.json()
@@ -132,40 +134,85 @@ class UserTestCase(unittest.TestCase):
         self.assertEqual(
             data.get('detail'), "User with the email nobodie@test.com is not available")
 
-    # def test_create_course(self):
+    def test_create_course(self):
+        access_token = create_access_token(
+            data={"sub": self.user_test['email']})
 
-    #     # Authenticated user
-    #     print('token', self.access_token)
-    #     response = self.client.post(
-    #         '/course/',
-    #         headers={
-    #             'Content-Type': 'application/json',
-    #             'Authorization': f'Bearer {self.access_token}'
-    #         },
-    #         data={
-    #             'name': 'test course',
-    #             'description': 'desc test course',
-    #         }
-    #     )
+        # Authenticated user
+        response = self.client.post(
+            '/course/',
+            headers={
+                'Authorization': f'Bearer {access_token}'
+            },
+            json={
+                'name': 'test course',
+                'description': 'desc test course',
+            }
+        )
 
-    #     data = response.json()
+        data = response.json()
 
-    #     self.assertTrue(data.get('id'))
-    #     self.assertEqual(type(data.get('id')), 'int')
+        self.assertTrue(data.get('id'))
+        self.assertIs(type(data.get('id')), int)
 
-    #     # Non authenticated user
+        # Non authenticated user
 
-    #     response = self.client.post(
-    #         '/course/',
-    #         data={
-    #             'name': 'test course',
-    #             'description': 'desc test course',
-    #         }
-    #     )
+        response = self.client.post(
+            '/course/',
+            data={
+                'name': 'test course',
+                'description': 'desc test course',
+            }
+        )
 
-    #     data = response.json()
+        data = response.json()
 
-    #     self.assertEqual(data.get('detail'), 'Not authenticated')
+        self.assertEqual(data.get('detail'), 'Not authenticated')
+
+    def test_enroll_to_course(self):
+
+        u1 = models.User(name='u1', email='u1@test.com', password='hashx1')
+        u2 = models.User(name='u2', email='u2@test.com', password='hashx2')
+        u3 = models.User(name='u3', email='u3@test.com', password='hashx3')
+
+        db = next(override_get_db())
+        db.add_all([u1, u2, u3])
+        db.commit()
+
+        course_id = db.query(models.Course).first().id
+
+        # enroll by id
+
+        response = self.client.post(
+            f'/course/{course_id}/enroll/by_id/{u1.id}',
+        )
+
+        self.assertEqual(response.json(), 'done')
+
+        # enroll by email
+
+        response = self.client.post(
+            f'/course/{course_id}/enroll/by_email/{u2.email}',
+        )
+
+        self.assertEqual(response.json(), 'done')
+
+        # delegate
+
+        response = self.client.post(
+            f'course/{course_id}/delegate/{u1.id}',
+        )
+
+        self.assertEqual(response.json(), 'done')
+
+        # delegate user not enrolled in course
+
+        response = self.client.post(
+            f'course/{course_id}/delegate/{u3.id}',
+        )
+
+        self.assertEqual(response.json().get('detail'),
+                         'the user must be enrolled!')
 
 
 def ln(f): return getattr(UserTestCase, f).__code__.co_firstlineno

@@ -50,7 +50,7 @@ class User(Base):
     name = Column(String)
     email = Column(String)
     password = Column(String)
-    oauth = Column(Boolean)
+    oauth = Column(Boolean, default=False)
 
     inscriptions = relationship(
         "Inscription",
