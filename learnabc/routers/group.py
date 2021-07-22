@@ -19,7 +19,7 @@ get_db = database.get_db
 def create_group(course_id: int, name: str, db: Session = Depends(get_db)):
     course = db.query(models.Course).filter_by(id=course_id).first()
     if name == 'default':
-        name = 'Group ' + str(len(course.groups)+1)
+        name = 'Grupo ' + str(len(course.groups)+1)
     new_group = models.Group(name=name, course_id=course_id)
     db.add(new_group)
     db.commit()
@@ -110,3 +110,14 @@ def get_inscriptions(group_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail='group does not exist')
     return group.inscriptions
+
+
+@router.delete('/{group_id}')
+def delete_group(group_id: int, db: Session = Depends(get_db)):
+    group = db.query(models.Group).filter_by(id=group_id).first()
+    if not group:
+        raise HTTPException(status=status.HTTP_404_NOT_FOUND,
+                            detail='group does not exist')
+    db.delete(group)
+    db.commit()
+    return {'detail': 'done'}

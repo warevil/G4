@@ -67,7 +67,7 @@ def enroll_me(
     return "done"
 
 
-@router.post('/{id}/enroll/by_id{user_id}', status_code=status.HTTP_201_CREATED)
+@router.post('/{id}/enroll/by_id/{user_id}', status_code=status.HTTP_201_CREATED)
 def enroll_user(id: int, user_id: int, db: Session = Depends(get_db)):
 
     course = db.query(models.Course).filter_by(id=id).first()
@@ -115,10 +115,16 @@ def delegate_user(id: int, user_id: int, db: Session = Depends(get_db)):
 
     course = db.query(models.Course).filter_by(id=id).first()
     user = db.query(models.User).filter_by(id=user_id).first()
+    inscription = db.query(models.Inscription).filter_by(
+        user_id=user_id, course_id=id).first()
 
     if not course or not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"course or user does not exists!")
+
+    if not inscription:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"the user must be enrolled!")
 
     course.delegate = user
     db.commit()
