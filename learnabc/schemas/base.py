@@ -4,6 +4,11 @@ from pydantic import BaseModel, validator
 from datetime import date, time
 
 
+class EditUser(BaseModel):
+    phone: str
+    link: str
+
+
 class CourseCode(BaseModel):
     code: str
 

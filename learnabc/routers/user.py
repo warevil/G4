@@ -1,7 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
 from .. import database, models, schemas
-# from ..schemas import course, user, base
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, status
 from ..repository import user
@@ -37,3 +36,19 @@ def get_user_by_email(email: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"User with the email {email} is not available")
     return user
+
+
+@router.put('/{email}')
+def edit_user(request: schemas.base.EditUser, email: str, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter_by(email=email).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"User with the email {email} is not available")
+    if request.phone:
+        user.phone = request.phone
+    if request.link:
+        user.link = request.link
+
+    db.commit()
+
+    return {'detail': 'done'}

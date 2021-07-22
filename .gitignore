@@ -3,7 +3,6 @@ ngrok.exe
 test_database.py
 *.pu
 trash
-test.db
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -37,7 +36,7 @@ MANIFEST
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
-# *.db
+*.db
 
 # Installer logs
 pip-log.txt

@@ -51,7 +51,9 @@ class User(Base):
     email = Column(String)
     password = Column(String)
     oauth = Column(Boolean, default=False)
-
+    phone = Column(String, default='sin número')
+    link = Column(String, default='sin enlace')
+    
     inscriptions = relationship(
         "Inscription",
         back_populates="user",

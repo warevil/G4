@@ -23,6 +23,8 @@ class InscriptionCourse(BaseModel):
 class ShowUser(BaseModel):
     name: str
     email: str
+    phone: str
+    link: str
     courses_created: List[Course] = []
     inscriptions: List[InscriptionCourse] = []
 
