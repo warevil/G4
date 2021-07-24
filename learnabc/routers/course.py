@@ -181,7 +181,7 @@ def get_new_code(id: int, db: Session = Depends(get_db)):
                             detail=f"Course with id {id} not found")
 
     new_code = str(course.id) + ''.join(random.choice(string.ascii_uppercase)
-                                        for i in range(6))
+                                        for _ in range(8))
 
     course.code = new_code
 
@@ -240,3 +240,23 @@ def delete(
     db.commit()
 
     return "done"
+
+
+@router.put('/edit/{id}', status_code=status.HTTP_200_OK)
+def edit_course(
+        id: int,
+        request: schemas.course.CourseEdit,
+        db: Session = Depends(get_db)):
+
+    course = db.query(models.Course).filter_by(id=id).first()
+
+    if not course:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Course with id {id} not found")
+
+    course.name = request.name
+    course.description = request.description
+
+    db.commit()
+
+    return {'detail': 'done'}

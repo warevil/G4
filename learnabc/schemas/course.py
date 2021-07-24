@@ -3,6 +3,9 @@ from typing import List, Optional, Union
 from pydantic import BaseModel, validator
 from .base import Group, User
 
+class CourseEdit(BaseModel):
+    name: str
+    description: str
 
 class UserEmail(BaseModel):
     email: str
