@@ -53,7 +53,7 @@ class User(Base):
     oauth = Column(Boolean, default=False)
     phone = Column(String, default='sin número')
     link = Column(String, default='sin enlace')
-    
+
     inscriptions = relationship(
         "Inscription",
         back_populates="user",
@@ -155,8 +155,8 @@ class Publication(Base):
     __tablename__ = 'publications'
 
     id = Column(Integer, primary_key=True)
-    date = Column(Date, default=datetime.now().date())
-    time = Column(Time, default=datetime.now().time())
+    date = Column(Date, default=lambda: datetime.now().date())
+    time = Column(Time, default=lambda: datetime.now().time())
     description = Column(String)
     title = Column(String)
     type = Column(Integer, default=1)
@@ -194,8 +194,8 @@ class Comment(Base):
     __tablename__ = 'comments'
 
     id = Column(Integer, primary_key=True)
-    date = Column(Date, default=datetime.now().date())
-    time = Column(Time, default=datetime.now().time())
+    date = Column(Date, default=lambda: datetime.now().date())
+    time = Column(Time, default=lambda: datetime.now().time())
     content = Column(String)
 
     publication_id = Column(
@@ -286,8 +286,8 @@ class Evaluation(Base):
 class Submission(Base):
     __tablename__ = 'submissions'
     id = Column(Integer, primary_key=True)
-    date = Column(Date, default=datetime.now().date())
-    time = Column(Time, default=datetime.now().time())
+    date = Column(Date, default=lambda: datetime.now().date())
+    time = Column(Time, default=lambda: datetime.now().time())
     calification = Column(Integer, default=0)
 
     evaluation_id = Column(
