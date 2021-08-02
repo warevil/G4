@@ -179,7 +179,8 @@ class UserTestCase(unittest.TestCase):
         db.add_all([u1, u2, u3])
         db.commit()
 
-        course_id = db.query(models.Course).first().id
+        course = db.query(models.Course).first()
+        course_id = course.id
 
         # enroll by id
 
@@ -188,13 +189,18 @@ class UserTestCase(unittest.TestCase):
         )
 
         self.assertEqual(response.json(), 'done')
+        inscription = db.query(models.Inscription).filter_by(
+            user_id=u1.id, course_id=course_id)
+        self.assertTrue(inscription)
 
         # enroll by email
 
         response = self.client.post(
             f'/course/{course_id}/enroll/by_email/{u2.email}',
         )
-
+        inscription = db.query(models.Inscription).filter_by(
+            user_id=u2.id, course_id=course_id)
+        self.assertTrue(inscription)
         self.assertEqual(response.json(), 'done')
 
         # delegate
@@ -203,7 +209,9 @@ class UserTestCase(unittest.TestCase):
             f'course/{course_id}/delegate/{u1.id}',
         )
 
+        db.refresh(course)
         self.assertEqual(response.json(), 'done')
+        self.assertEqual(course.delegate_id, u1.id)
 
         # delegate user not enrolled in course
 
@@ -213,6 +221,23 @@ class UserTestCase(unittest.TestCase):
 
         self.assertEqual(response.json().get('detail'),
                          'the user must be enrolled!')
+
+        # calificate user
+
+        response = self.client.post(
+            f'course/{course_id}/calification/{u1.id}',
+            json={
+                'calification': '20',
+            }
+        )
+
+        self.assertEqual(response.json(), 'done')
+        inscription = db.query(models.Inscription).filter_by(
+            user_id=u1.id, course_id=course_id).first()
+        self.assertEqual(inscription.calification, 20)
+
+
+# sort test
 
 
 def ln(f): return getattr(UserTestCase, f).__code__.co_firstlineno
