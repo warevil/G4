@@ -31,6 +31,9 @@
     <script type="text/javascript" src="js/google_translate.js"></script>
     <script type="text/javascript" src="http://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
+    <!-- SMTP -->
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
+
     <!-- START nav -->
 	  <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
 	    <div class="container">
@@ -43,6 +46,7 @@
 	      <div class="collapse navbar-collapse" id="ftco-nav">
 	        <ul class="navbar-nav ml-auto">
 	          <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+	          <li class="nav-item"><a href="code.html" class="nav-link">My account</a></li>
 	          <li class="nav-item"><a href="https://opencovid-peru.com/mapa-emergencia" target="_blank" class="nav-link">UCI</a></li>
             <li class="nav-item"><a href="https://opencovid-peru.com/vacunacion" target="_blank" class="nav-link">Vaccination</a></li>
             <li class="nav-item"><a href="https://opencovid-peru.com/situacion-distrital-pandemia" target="_blank" class="nav-link">Covid</a></li>
@@ -315,86 +319,116 @@
   <!-- loader -->
   <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
 
-  <!-- Modal -->
-  <div class="modal fade" id="modalRequest" tabindex="-1" role="dialog" aria-labelledby="modalRequestLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title" id="modalRequestLabel">Make an Appointment</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form action="#">
-            <div class="form-group">
-              <!-- <label for="appointment_name" class="text-black">Full Name</label> -->
-              <input type="text" class="form-control" id="appointment_name" placeholder="Full Name">
-            </div>
-            <div class="form-group">
-              <!-- <label for="appointment_email" class="text-black">Email</label> -->
-              <input type="text" class="form-control" id="appointment_email" placeholder="Email">
-            </div>
-            <div class="form-group">
-              <input type="text" class="form-control" id="appointment_code" placeholder="Code">
-            </div>
-            <div class="form-group ">
-              <select class="form-control" id="appointment_modality">
-                <option hidden selected>Appointment modality</option>
-                <option value="1">In person</option>
-                <option value="2">Virtual</option>
-              </select>
-            </div>
-            <div class="form-group ">
-              <select class="form-control" id="appointment_attentionArea">
-                <option hidden selected>Attention Area</option>
-                <option value="1">Medicina general</option>
-                <option value="2">Cirugia</option>
-                <option value="3">Rayos X</option>
-                <option value="4">Oftalmologia</option>
-                <option value="5">Covid</option>
-              </select>
-            </div>
-            <div class="form-group ">
-              <select class="form-control" id="appointment_doctor">
-                <option hidden selected>Doctor</option>
-                <option value="1">Marcos Lopez</option>
-                <option value="2">Roger Ramos</option>
-                <option value="3">Pedro Ugaz</option>
-                <option value="4">Lana Lane</option>
-                <option value="5">Pedro Pascal</option>
-              </select>
-            </div>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <!-- <label for="appointment_date" class="text-black">Date</label> -->
-                  <input type="text" class="form-control appointment_date" placeholder="Date">
-                </div>    
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <!-- <label for="appointment_time" class="text-black">Time</label> -->
-                  <input type="text" class="form-control appointment_time" placeholder="Time">
-                </div>
-              </div>
-            </div>
-            
 
-            <div class="form-group">
-              <!-- <label for="appointment_message" class="text-black">Message</label> -->
-              <textarea name="" id="appointment_symptoms" class="form-control" cols="30" rows="10" placeholder="Describe your symptoms"></textarea>
-            </div>
-            <div class="form-group">
-              <input type="submit" value="Make an Appointment" class="btn btn-primary">
-            </div>
-          </form>
-        </div>
-        
+    <!-- Modal -->
+    <div class="modal fade" id="modalRequest" tabindex="-1" role="dialog" aria-labelledby="modalRequestLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 class="modal-title" id="modalRequestLabel">Make an Appointment</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <form action="#">
+                      <div class="form-group">
+                          <!-- <label for="appointment_name" class="text-black">Full Name</label> -->
+                          <input type="text" class="form-control" id="appointment_name" placeholder="Full Name">
+                      </div>
+                      <div class="form-group">
+                          <!-- <label for="appointment_email" class="text-black">Email</label> -->
+                          <input type="text" class="form-control" id="appointment_email" placeholder="Email">
+                      </div>
+                      <div class="form-group">
+                          <input type="text" class="form-control" id="appointment_code" placeholder="Code">
+                      </div>
+                      <div class="form-group ">
+                          <select class="form-control" id="appointment_modality">
+                            <option hidden selected>Appointment modality</option>
+                            <option value="1">In person</option>
+                            <option value="2">Virtual</option>
+                          </select>
+                      </div>
+                      <div class="form-group ">
+                          <select class="form-control" id="appointment_attentionArea">
+                            <option hidden selected>Attention Area</option>
+                            <option value="1">General</option>
+                            <option value="2">Surgery</option>
+                            <option value="3">X-Ray</option>
+                            <option value="4">Oftalmology</option>
+                            <option value="5">Covid</option>
+                          </select>
+                      </div>
+                      <div class="form-group ">
+                          <select class="form-control" id="appointment_doctor">
+                            <option hidden selected>Doctor</option>
+                            <option value="1">Marcos Lopez</option>
+                            <option value="2">Roger Ramos</option>
+                            <option value="3">Pedro Ugaz</option>
+                            <option value="4">Lana Lane</option>
+                            <option value="5">Pedro Pascal</option>
+                          </select>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <!-- <label for="appointment_date" class="text-black">Date</label> -->
+                                  <input type="text" class="form-control appointment_date" id="appointment_date" placeholder="Date">
+                              </div>
+                          </div>
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <!-- <label for="appointment_time" class="text-black">Time</label> -->
+                                  <input type="text" class="form-control appointment_time" id="appointment_time" placeholder="Time">
+                              </div>
+                          </div>
+                      </div>
+
+
+                      <div class="form-group">
+                          <!-- <label for="appointment_message" class="text-black">Message</label> -->
+                          <textarea name="" id="appointment_symptoms" class="form-control" cols="30" rows="10" placeholder="Describe your symptoms"></textarea>
+                      </div>
+                      <div class="form-group">
+                          <input id="appointment_send" type="submit" value="Make an Appointment" class="btn btn-primary">
+                      </div>
+                  </form>
+              </div>
+
+          </div>
       </div>
-    </div>
   </div>
 
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-app.js"></script>
+
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-analytics.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-database.js"></script>
+
+  <script>
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      var firebaseConfig = {
+          apiKey: "AIzaSyC-MCL4ipy4O-H_sdHop1lQ_460wlvfNdY",
+          authDomain: "medicalfisi.firebaseapp.com",
+          databaseURL: "https://medicalfisi-default-rtdb.firebaseio.com",
+          projectId: "medicalfisi",
+          storageBucket: "medicalfisi.appspot.com",
+          messagingSenderId: "352577249230",
+          appId: "1:352577249230:web:9c81150b6b5c77d231559f",
+          measurementId: "G-Z283F77WDM"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+
+      fire_database = firebase.database();
+  </script>
+  <script src="script/index.js"></script>
 
   <script src="js/jquery.min.js"></script>
   <script src="js/jquery-migrate-3.0.1.min.js"></script>
