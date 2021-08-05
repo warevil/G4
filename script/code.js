@@ -15,7 +15,7 @@ const drawUserCard = (user) => {
                         </li>
                         <li class="list-group-item">
                             <code>phone: </code>
-                            <div class="card-text">phoneNumber: ${phoneNumber}</div>
+                            <div class="card-text">${(phoneNumber)? phoneNumber:"Sin número" }</div>
                         </li>
                         <li class="list-group-item">
                             <code>Código de Asegurado: </code>
