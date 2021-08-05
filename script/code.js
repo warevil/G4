@@ -11,15 +11,15 @@ const drawUserCard = (user) => {
                     <ul class="list-group">
                         <li class="list-group-item">
                             <code>email: </code>
-                            <div class="card-text">${email}.</div>
+                            <div class="card-text">${email}</div>
                         </li>
                         <li class="list-group-item">
                             <code>phone: </code>
-                            <div class="card-text">phoneNumber: ${phoneNumber}.</div>
+                            <div class="card-text">phoneNumber: ${phoneNumber}</div>
                         </li>
                         <li class="list-group-item">
                             <code>Código de Asegurado: </code>
-                            <div class="card-text">${uid}.</div>
+                            <div class="card-text">${uid}</div>
                         </li>
                     </ul>
                 </div>
