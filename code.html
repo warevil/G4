@@ -114,7 +114,9 @@
         firebase.initializeApp(firebaseConfig);
         firebase.analytics();
 
-        fire_database = firebase.database();
+        
+        const fire_auth = firebase.auth;
+        const fire_database = firebase.database();
     </script>
     <script src="script/index.js"></script>
 
