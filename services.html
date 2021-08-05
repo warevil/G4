@@ -400,21 +400,11 @@
                         <div class="form-group ">
                             <select class="form-control" id="appointment_attentionArea">
                               <option hidden selected>Attention Area</option>
-                              <option value="1">General</option>
-                              <option value="2">Surgery</option>
-                              <option value="3">X-Ray</option>
-                              <option value="4">Oftalmology</option>
-                              <option value="5">Covid</option>
                             </select>
                         </div>
                         <div class="form-group ">
                             <select class="form-control" id="appointment_doctor">
                               <option hidden selected>Doctor</option>
-                              <option value="1">Marcos Lopez</option>
-                              <option value="2">Roger Ramos</option>
-                              <option value="3">Pedro Ugaz</option>
-                              <option value="4">Lana Lane</option>
-                              <option value="5">Pedro Pascal</option>
                             </select>
                         </div>
                         <div class="row">
@@ -447,13 +437,17 @@
         </div>
     </div>
 
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-app.js"></script>
+<!-- FIREBASE SDK  -->
 
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-analytics.js"></script>
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-app.js"></script>
 
+    <!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-analytics.js"></script>
+
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-database.js"></script>
 
     <script>
@@ -477,7 +471,6 @@ https://firebase.google.com/docs/web/setup#available-libraries -->
     </script>
     <script src="script/index.js"></script>
 
-    <!-- Scripts -->
     <script src="js/jquery.min.js"></script>
     <script src="js/jquery-migrate-3.0.1.min.js"></script>
     <script src="js/popper.min.js"></script>
@@ -492,9 +485,13 @@ https://firebase.google.com/docs/web/setup#available-libraries -->
     <script src="js/bootstrap-datepicker.js"></script>
     <script src="js/jquery.timepicker.min.js"></script>
     <script src="js/scrollax.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
-    <script src="js/google-map.js"></script>
     <script src="js/main.js"></script>
+
+    <script src="script/doctorData.js"></script>
+    <script src="script/doctor.js"></script>
+    <script src="script/doctorList.js"></script>
+    <script src="./script/code.js"></script>
+
 
 </body>
 
