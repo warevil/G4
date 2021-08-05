@@ -33,7 +33,7 @@ const renderFamily = () => {
     dataRef.on('value', (snapshot) => {
         family_table.innerHTML = '';
         snapshot.forEach((child) => {
-
+            const key = child.key
             console.log(child);
             const { name, email } = child.val();
 
@@ -43,13 +43,21 @@ const renderFamily = () => {
                 <td class="align-middle text-capitalize">${name}</td>
                 <td class="align-middle">${email}</td>
                 <td class="align-middle">
-                    <div style="display:flex" data-name="${name}">
+                    <div style="display:flex" data-key="${key}">
                         <i class="fa fa-trash btn btn-outline-danger btn-sm" ></i>
                     </div>
                 </td>
             `;
 
         });
+
+        Array.from(document.querySelectorAll(".btn-outline-danger"))
+            .map(btn => btn.onclick = (e) => {
+                const key = e.target.parentElement.dataset.key;
+                fire_database.ref(`family/${user.uid}/${key}`).remove()
+            })
+
+
     });
 }
 
