@@ -22,7 +22,7 @@ $(document).ready(function () {
 		Object.values(doctorData).forEach((elem) => {
 			if(elem.specialty  === value){
 				$("#appointment_doctor").append(
-					$("<option>").val(elem.doctorId).text(elem.fullName)
+					$("<option>").val(elem.fullName).text(elem.fullName)
 				);
 			}
 		});
