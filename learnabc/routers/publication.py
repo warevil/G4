@@ -216,11 +216,3 @@ def get_course_publications(course_id: int, db: Session = Depends(get_db)):
         course_id=course_id).all()
 
     return publications
-
-
-@router.get('/{id}', response_model=schemas.publication.ShowPublication, status_code=status.HTTP_201_CREATED)
-def get_publication(id: int, db: Session = Depends(get_db)):
-
-    publication = db.query(models.Publication).filter_by(id=id).first()
-
-    return publication

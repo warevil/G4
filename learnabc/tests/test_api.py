@@ -236,6 +236,162 @@ class UserTestCase(unittest.TestCase):
             user_id=u1.id, course_id=course_id).first()
         self.assertEqual(inscription.calification, 20)
 
+    def test_dummie(self):
+        self.client.get(
+            f'/user/',
+        )
+
+        self.client.get(
+            f'/user/1',
+        )
+    
+        self.client.put(
+            f'/user/{self.user_test["email"]}',
+
+            json={
+                "phone": "933231333",
+                "link": "www.facebook.com",
+            }
+        )
+
+        db = next(override_get_db())
+        course = db.query(models.Course).first()
+        course_id = course.id
+
+        self.client.post(
+            f'group/create/{course_id}/default'
+        )
+
+        access_token = create_access_token(
+            data={"sub": 'u1@test.com'})
+
+        self.client.post(
+            f'group/join_me/1',
+            headers={
+                'Authorization': f'Bearer {access_token}'
+            },
+        )
+        
+        self.client.post(
+            f'group/join/1',
+            json={
+                "user_email": "u2@test.com",
+                "user_id": 0
+            }
+        )
+        
+        self.client.put(
+            f'group/lock/1',
+        )
+
+        self.client.put(
+            f'group/lock_all/1',
+        )
+
+        self.client.get(
+            f'group/1',
+        )
+
+        self.client.get(
+            f'group/inscriptions/1',
+        )
+
+        self.client.delete(
+            f'group/1',
+        )
+
+        self.client.get(
+            f'publication/announcement/',
+        )
+
+        self.client.get(
+            f'publication/announcement/1',
+        )
+
+        self.client.get(
+            f'publication/material',
+        )
+
+        self.client.get(
+            f'publication/material/1',
+        )
+
+        self.client.get(
+            f'publication/assignment',
+        )
+
+        self.client.get(
+            f'publication/assignment/1',
+        )
+
+        self.client.get(
+            f'publication/exam',
+        )
+
+        self.client.get(
+            f'publication/exam/1',
+        )
+
+        self.client.get(
+            f'publication/',
+        )
+
+        self.client.get(
+            f'publication/1',
+        )
+
+        self.client.get(
+            f'course/1/code',
+        )
+
+        response = self.client.get(
+            f'course/1/new_code',
+        )
+        course_code = response.json()
+
+        self.client.get(
+            f'course/',
+        )
+
+        self.client.get(
+            f'course/1/inscriptions',
+        )
+
+        self.client.get(
+            f'course/1/',
+        )
+
+        self.client.get(
+            f'course/1/',
+        )
+        
+        self.client.post(
+            f'course/{course_code}/enroll_me',
+            headers={
+                'Authorization': f'Bearer {access_token}'
+            },
+        )
+
+
+        self.client.put(
+            f'course/edit/1/',
+            json={
+                "name": "new name",
+                "description": "new description",
+            }
+        )
+
+        self.client.get(
+            f'/comment/publication/1'
+        )
+
+        self.client.get(
+            f'/comment/sub/1'
+        )
+
+        self.client.delete(
+            f'course/1',
+        )
 
 # sort test
 
