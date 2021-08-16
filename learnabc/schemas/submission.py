@@ -1,4 +1,3 @@
-# from learnabc.schemas.publication import ShowAssignment
 from typing import List, Optional
 from pydantic import BaseModel
 from .base import Course, User, Assignment

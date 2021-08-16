@@ -34,7 +34,7 @@ def create_course(
     db.commit()
 
     new_course.code = str(new_course.id) + ''.join(random.choice(string.ascii_uppercase)
-                                                   for i in range(6))
+                                                   for _ in range(6))
 
     db.commit()
 
@@ -129,20 +129,6 @@ def delegate_user(id: int, user_id: int, db: Session = Depends(get_db)):
     course.delegate = user
     db.commit()
     return "done"
-
-
-# @router.post('/{id}/code', status_code=status.HTTP_201_CREATED)
-# def set_code(id: int, request: schemas.base.CourseCode, db: Session = Depends(get_db)):
-
-#     course = db.query(models.Course).filter_by(id=id).first()
-
-#     if not course:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-#                             detail=f"Course with id {id} not found")
-
-#     course.code = request.code
-#     db.commit()
-#     return "done"
 
 
 @router.post('/{id}/calification/{user_id}', status_code=status.HTTP_200_OK)

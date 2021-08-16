@@ -3,9 +3,11 @@ from typing import List, Optional, Union
 from pydantic import BaseModel, validator
 from .base import Group, User
 
+
 class CourseEdit(BaseModel):
     name: str
     description: str
+
 
 class UserEmail(BaseModel):
     email: str
@@ -34,13 +36,8 @@ class ShowCourse(BaseModel):
     inscriptions: List[InscriptionUser] = []
     groups: List[Group] = []
 
-    @validator('delegate')
+    @validator('delegate', 'code')
     def valid_delegate(cls, v):
-        if v is not None:
-            return v
-
-    @validator('code')
-    def valid_code(cls, v):
         if v is not None:
             return v
 

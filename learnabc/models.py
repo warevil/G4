@@ -7,15 +7,18 @@ from datetime import datetime
 TODO implement CASCADE deletes
 """
 
+USERS_ID = "users.id"
+COURSES_ID = "courses.id"
+DEL_MER_SAVEUPDATE =  "delete, merge, save-update"
 
 class Inscription(Base):
     __tablename__ = 'inscriptions'
 
     calification = Column(Integer, default=0)
 
-    user_id = Column(Integer, ForeignKey('users.id'), primary_key=True)
+    user_id = Column(Integer, ForeignKey(USERS_ID), primary_key=True)
 
-    course_id = Column(Integer, ForeignKey('courses.id'), primary_key=True)
+    course_id = Column(Integer, ForeignKey(COURSES_ID), primary_key=True)
 
     group_id = Column(Integer, ForeignKey('groups.id'))
 
@@ -36,7 +39,7 @@ class Group(Base):
     name = Column(String, default="Unknow")
     locked = Column(Boolean, default=False)
 
-    course_id = Column(Integer, ForeignKey('courses.id'), nullable=False)
+    course_id = Column(Integer, ForeignKey(COURSES_ID), nullable=False)
 
     course = relationship('Course', back_populates='groups')
 
@@ -57,20 +60,20 @@ class User(Base):
     inscriptions = relationship(
         "Inscription",
         back_populates="user",
-        cascade="delete, merge, save-update"
+        cascade=DEL_MER_SAVEUPDATE
     )
 
     submissions = relationship(
         "Submission",
         back_populates="user",
-        cascade="delete, merge, save-update"
+        cascade=DEL_MER_SAVEUPDATE
     )
 
     courses_created = relationship(
         'Course',
         back_populates="creator",
         primaryjoin="User.id==Course.user_id",
-        cascade="delete, merge, save-update"
+        cascade=DEL_MER_SAVEUPDATE
     )
 
     courses_delegate = relationship(
@@ -82,13 +85,13 @@ class User(Base):
     comments = relationship(
         'Comment',
         back_populates='user',
-        cascade="delete, merge, save-update"
+        cascade=DEL_MER_SAVEUPDATE
     )
 
     comment_reactions = relationship(
         'CommentReaction',
         back_populates='user',
-        cascade="delete, merge, save-update"
+        cascade=DEL_MER_SAVEUPDATE
     )
 
     def __repr__(self):
@@ -105,12 +108,12 @@ class Course(Base):
 
     delegate_id = Column(
         Integer,
-        ForeignKey('users.id')
+        ForeignKey(USERS_ID)
     )
 
     user_id = Column(
         Integer,
-        ForeignKey('users.id'),
+        ForeignKey(USERS_ID),
         nullable=False
     )
 
@@ -129,19 +132,19 @@ class Course(Base):
     inscriptions = relationship(
         "Inscription",
         back_populates="course",
-        cascade="delete, merge, save-update"
+        cascade=DEL_MER_SAVEUPDATE
     )
 
     publications = relationship(
         "Publication",
         back_populates="course",
-        cascade="delete, merge, save-update"
+        cascade=DEL_MER_SAVEUPDATE
     )
 
     groups = relationship(
         'Group',
         back_populates='course',
-        cascade="delete, merge, save-update"
+        cascade=DEL_MER_SAVEUPDATE
     )
 
     def __repr__(self):
@@ -163,7 +166,7 @@ class Publication(Base):
 
     course_id = Column(
         Integer,
-        ForeignKey('courses.id'),
+        ForeignKey(COURSES_ID),
         nullable=False
     )
 
@@ -180,13 +183,13 @@ class Publication(Base):
     evaluation = relationship(
         "Evaluation",
         back_populates="publication",
-        cascade="delete, merge, save-update"
+        cascade=DEL_MER_SAVEUPDATE
     )
 
     comments = relationship(
         'Comment',
         back_populates='publication',
-        cascade="delete, merge, save-update"
+        cascade=DEL_MER_SAVEUPDATE
     )
 
 
@@ -204,7 +207,7 @@ class Comment(Base):
 
     user_id = Column(
         Integer,
-        ForeignKey('users.id'))
+        ForeignKey(USERS_ID))
 
     parent_id = Column(
         Integer,
@@ -223,13 +226,13 @@ class Comment(Base):
     comments = relationship(
         'Comment',
         back_populates='reply_to',
-        cascade="delete, merge, save-update"
+        cascade=DEL_MER_SAVEUPDATE
     )
 
     reactions = relationship(
         'CommentReaction',
         back_populates='comment',
-        cascade="delete, merge, save-update"
+        cascade=DEL_MER_SAVEUPDATE
     )
 
 
@@ -241,7 +244,7 @@ class CommentReaction(Base):
 
     user_id = Column(
         Integer,
-        ForeignKey('users.id'),
+        ForeignKey(USERS_ID),
         primary_key=True)
 
     comment_id = Column(
@@ -279,7 +282,7 @@ class Evaluation(Base):
     submissions = relationship(
         "Submission",
         back_populates="evaluation",
-        cascade="delete, merge, save-update"
+        cascade=DEL_MER_SAVEUPDATE
     )
 
 
@@ -297,7 +300,7 @@ class Submission(Base):
 
     user_id = Column(
         Integer,
-        ForeignKey('users.id'),
+        ForeignKey(USERS_ID),
         nullable=False)
 
     evaluation = relationship(

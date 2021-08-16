@@ -30,6 +30,7 @@ def override_get_db():
 
 app.dependency_overrides[get_db] = override_get_db
 
+LOGIN_PATH = "/login"
 
 class UserTestCase(unittest.TestCase):
 
@@ -65,7 +66,7 @@ class UserTestCase(unittest.TestCase):
         # Test success login
 
         response = self.client.post(
-            '/login',
+            LOGIN_PATH,
             data={
                 'username': self.user_test['email'],
                 'password': self.user_test['password']
@@ -81,7 +82,7 @@ class UserTestCase(unittest.TestCase):
         # Test invalid password
 
         response = self.client.post(
-            '/login',
+            LOGIN_PATH,
             data={
                 'username': self.user_test['email'],
                 'password': 'jakia2'
@@ -95,7 +96,7 @@ class UserTestCase(unittest.TestCase):
 
         # Test invalid credentials
         response = self.client.post(
-            '/login',
+            LOGIN_PATH,
             data={
                 'username': 'the_nobodies@gmail.com',
                 'password': 'pwd'

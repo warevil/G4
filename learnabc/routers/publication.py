@@ -1,5 +1,4 @@
 from hashlib import new
-# from learnabc.schemas import course
 from typing import List
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy import false

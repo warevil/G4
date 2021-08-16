@@ -1,4 +1,3 @@
-# from learnabc.schemas import course
 from typing import List
 from fastapi import APIRouter, Depends, status, HTTPException
 from .. import database, models, oauth2, schemas
