@@ -237,55 +237,6 @@ class UserTestCase(unittest.TestCase):
             user_id=u1.id, course_id=course_id).first()
         self.assertEqual(inscription.calification, 20)
 
-    def test_calificate_user(self):
-        access_token = create_access_token(
-            data={"sub": self.user_test['email']})
-
-        # crear un assignment porque tiene es el tipo de publicacion que
-        # puede calificarse
-        response = self.client.post('/publication/assignment/1',
-            headers={
-                'Authorization': f'Bearer {access_token}'
-            },
-            json={
-                "title": "test calif 1808",
-                "description": "sadasasdsad",
-                "date_max": "2021-08-22",
-                "time_max": "10:00:00",
-                "score_max": 20,
-                "group": True
-            })
-        
-        pub_id = response.json()['id']
-
-        # crear una submission para la publicacion creada anteriormente
-        response = self.client.post('/submission',
-            headers={
-                'Authorization': f'Bearer {access_token}'
-            },
-            json={
-                "publication_id": pub_id
-            })
-
-        submission_id = response.json()['id']
-
-        # calificando la submission anteriormente creada
-        response = self.client.post(f'submission/{submission_id}/calificate/18')
-
-        # validando si fue creada con éxito
-        self.assertEqual(response.json()['detail'], 'done')
-
-        
-
-#         {
-#   "title": "test calif 1808",
-#   "description": "sadasasdsad",
-#   "date_max": "2021-08-22",
-#   "time_max": "10:00:00",
-#   "score_max": 20,
-#   "group": true
-# }
-
     def test_dummie(self):
         self.client.get(
             f'/user/',
