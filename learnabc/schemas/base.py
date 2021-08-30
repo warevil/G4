@@ -5,15 +5,33 @@ from datetime import date, time
 
 
 class EditUser(BaseModel):
+    """
+    Schema para EditUser
+
+    Args:
+        BaseModel ([type]): [description]
+    """
     phone: str
     link: str
 
 
 class CourseCode(BaseModel):
+    """
+    Schema para CourseCode
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     code: str
 
 
 class User(BaseModel):
+    """
+    Schema para User
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     id: int
     name: str
     email: str
@@ -24,6 +42,12 @@ class User(BaseModel):
 
 
 class GroupInscriptons(BaseModel):
+    """
+    Schema para GroupInscriptons
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     user: User
 
     class Config():
@@ -31,6 +55,12 @@ class GroupInscriptons(BaseModel):
 
 
 class Group(BaseModel):
+    """
+    Schema para Group
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     id: int
     name: str
     locked: bool
@@ -41,6 +71,12 @@ class Group(BaseModel):
 
 
 class Comment(BaseModel):
+    """
+    Schema para Comment
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     id: int
     user: User
     content: str
@@ -52,6 +88,12 @@ class Comment(BaseModel):
 
 
 class Evaluation(BaseModel):
+    """
+    Schema para Evaluation
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     id: int
     date_max: date
     time_max: time
@@ -64,6 +106,12 @@ class Evaluation(BaseModel):
 
 
 class Course(BaseModel):
+    """
+    Schema para Course
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     id: int
     name: str
     description: str
@@ -73,6 +121,12 @@ class Course(BaseModel):
 
 
 class Assignment(BaseModel):
+    """
+    Schema para Assignment
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     id: int
     title: str
     description: str
@@ -86,6 +140,12 @@ class Assignment(BaseModel):
 
 
 class CommentReaction(BaseModel):
+    """
+    Schema para CommentReaction
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     id: int
     user: User
     type: int
@@ -95,6 +155,12 @@ class CommentReaction(BaseModel):
 
 
 class Publication(BaseModel):
+    """
+    Schema para Publication
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     id: int
     title: str
     description: str
@@ -106,7 +172,7 @@ class Publication(BaseModel):
 
     @validator('evaluation')
     def validate_evaluation(cls, v):
-        if v is not None:
+        if v is not None: # pragma: no cover
             return v
 
     class Config():

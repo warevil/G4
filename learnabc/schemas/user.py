@@ -5,6 +5,12 @@ from .base import Course
 
 
 class RequestUser(BaseModel):
+    """
+    Schema para RequestUser
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     name: str
     email: str
     password: str
@@ -14,6 +20,12 @@ class RequestUser(BaseModel):
 
 
 class InscriptionCourse(BaseModel):
+    """
+    Schema para InscriptionCourse
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     course: Course
 
     class Config():
@@ -21,6 +33,12 @@ class InscriptionCourse(BaseModel):
 
 
 class ShowUser(BaseModel):
+    """
+    Schema para ShowUser
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     name: str
     email: str
     phone: str

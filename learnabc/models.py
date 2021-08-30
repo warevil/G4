@@ -3,15 +3,21 @@ from .database import Base
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
-"""
-TODO implement CASCADE deletes
-"""
 
 USERS_ID = "users.id"
 COURSES_ID = "courses.id"
 DEL_MER_SAVEUPDATE =  "delete, merge, save-update"
 
 class Inscription(Base):
+    """
+    Modelo para la tabla inscriptiones
+
+    Args:
+        Base ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     __tablename__ = 'inscriptions'
 
     calification = Column(Integer, default=0)
@@ -29,10 +35,26 @@ class Inscription(Base):
     group = relationship('Group', back_populates='inscriptions')
 
     def __repr__(self):
+        """
+        metodo para representar la clase en un string
+
+        Returns:
+            [type]: [description]
+        """
+
         return f"<Inscription(user= {self.user.name}, course= {self.course.name}, calification= {self.calification})>"
 
 
 class Group(Base):
+    """
+    Modelo para la tabla grupos
+
+    Args:
+        Base ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     __tablename__ = 'groups'
 
     id = Column(Integer, primary_key=True)
@@ -47,6 +69,15 @@ class Group(Base):
 
 
 class User(Base):
+    """
+    Modelo para la tabla usuarios
+
+    Args:
+        Base ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
@@ -95,10 +126,26 @@ class User(Base):
     )
 
     def __repr__(self):
+        """
+        metodo para representar la clase en un string
+
+        Returns:
+            [type]: [description]
+        """
+
         return f"<User(name= {self.name})>"
 
 
 class Course(Base):
+    """
+    Modelo para la tabla cursos
+
+    Args:
+        Base ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     __tablename__ = 'courses'
 
     id = Column(Integer, primary_key=True)
@@ -148,10 +195,26 @@ class Course(Base):
     )
 
     def __repr__(self):
+        """
+        metodo para representar la clase en un string
+
+        Returns:
+            [type]: [description]
+        """
+
         return f"<Course(name= {self.name})>"
 
 
 class Publication(Base):
+    """
+    Modelo para la tabla publicaciones
+
+    Args:
+        Base ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
 
     """ type = 1: Anuncio, 2: Material, 3: Tarea, 4:Examen """
 
@@ -194,6 +257,15 @@ class Publication(Base):
 
 
 class Comment(Base):
+    """
+    Modelo para la tabla comentarios
+
+    Args:
+        Base ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     __tablename__ = 'comments'
 
     id = Column(Integer, primary_key=True)
@@ -237,6 +309,16 @@ class Comment(Base):
 
 
 class CommentReaction(Base):
+    """
+    Modelo para la tabla de reacciones a comentarios, tal como
+    like o dislike
+
+    Args:
+        Base ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
 
     """ type = 1: Like 2: Dislike """
 
@@ -287,6 +369,15 @@ class Evaluation(Base):
 
 
 class Submission(Base):
+    """
+    Modelo para la tabla de los envios de los estudiantes
+
+    Args:
+        Base ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     __tablename__ = 'submissions'
     id = Column(Integer, primary_key=True)
     date = Column(Date, default=lambda: datetime.now().date())

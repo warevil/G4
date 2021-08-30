@@ -6,10 +6,22 @@ from datetime import date, time
 
 
 class RequestComment(BaseModel):
+    """
+    Schema para RequestComment
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     content: str
 
 
 class SubComment(BaseModel):
+    """
+    Schema para SubComment
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     id: int
     user: User
     date: date
@@ -22,6 +34,12 @@ class SubComment(BaseModel):
 
 
 class ShowCommentPublication(BaseModel):
+    """
+    Schema para ShowCommentPublication
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     id: int
     user: User
     content: str
@@ -35,6 +53,12 @@ class ShowCommentPublication(BaseModel):
 
 
 class ShowComment(BaseModel):
+    """
+    Schema para ShowComment
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     id: int
     user: User
     publication: Publication

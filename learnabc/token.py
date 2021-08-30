@@ -9,6 +9,15 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 24*60
 
 
 def create_access_token(data: dict):
+    """
+    Crea un token de acceso para un usuario que expira en 24*60 minutos (1 día)
+
+    Args:
+        data (dict): [description]
+
+    Returns:
+        [type]: [description]
+    """
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
@@ -17,6 +26,20 @@ def create_access_token(data: dict):
 
 
 def verify_token(token: str, credentials_exception):
+    """
+    Verifica que el token enviado es valido para el usuario
+
+    Args:
+        token (str): [description]
+        credentials_exception ([type]): [description]
+
+    Raises:
+        credentials_exception: [description]
+        credentials_exception: [description]
+
+    Returns:
+        [type]: [description]
+    """
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")

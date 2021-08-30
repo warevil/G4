@@ -5,20 +5,44 @@ from .base import Group, User
 
 
 class CourseEdit(BaseModel):
+    """
+    Schema para CourseEdit
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     name: str
     description: str
 
 
 class UserEmail(BaseModel):
+    """
+    Schema para UserEmail
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     email: str
 
 
 class RequestCourse(BaseModel):
+    """
+    Schema para RequestCourse
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     name: str
     description: str
 
 
 class InscriptionUser(BaseModel):
+    """
+    Schema para InscriptionUser
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     user: User
     calification: int
 
@@ -27,6 +51,12 @@ class InscriptionUser(BaseModel):
 
 
 class ShowCourse(BaseModel):
+    """
+    Schema para ShowCourse
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     id: int
     name: str
     description: str
@@ -46,4 +76,10 @@ class ShowCourse(BaseModel):
 
 
 class CalificationRequest(BaseModel):
+    """
+    Schema para CalificationRequest
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     calification: int

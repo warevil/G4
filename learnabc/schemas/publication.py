@@ -6,11 +6,23 @@ from datetime import date, time
 
 
 class RequestAnnouncement(BaseModel):
+    """
+    Schema para RequestAnnouncement
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     title: str
     description: str
 
 
 class RequestAssignment(BaseModel):
+    """
+    Schema para RequestAssignment
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     title: str
     description: str
     date_max: date
@@ -20,6 +32,12 @@ class RequestAssignment(BaseModel):
 
 
 class RequestExam(BaseModel):
+    """
+    Schema para RequestExam
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     title: str
     description: str
     date_max: date
@@ -28,6 +46,12 @@ class RequestExam(BaseModel):
 
 
 class ShowPublication(BaseModel):
+    """
+    Schema para ShowPublication
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     id: int
     title: str
     description: str
@@ -40,7 +64,7 @@ class ShowPublication(BaseModel):
 
     @validator('evaluation')
     def validate_evaluation(cls, v):
-        if v is not None:
+        if v is not None: # pragma: no cover
             return v
 
     class Config():
@@ -48,6 +72,12 @@ class ShowPublication(BaseModel):
 
 
 class ShowAssignment(BaseModel):
+    """
+    Schema para ShowAssignment
+
+    Args:
+        BaseModel ([type]): [description]
+   """
     id: int
     title: str
     description: str

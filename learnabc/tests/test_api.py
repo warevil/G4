@@ -1,12 +1,12 @@
+from learnabc.repository.user import show
 from learnabc import models
-from learnabc.token import create_access_token
+from learnabc.token import create_access_token, verify_token
 from ..app import app
 from ..database import Base, get_db
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import unittest
-
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 
@@ -19,8 +19,12 @@ TestingSessionLocal = sessionmaker(
 
 Base.metadata.create_all(bind=engine)
 
-
 def override_get_db():
+    """reeemplaza al metodo original de get_db
+
+    Yields:
+        [type]: [description]
+    """
     try:
         db = TestingSessionLocal()
         yield db
@@ -33,9 +37,16 @@ app.dependency_overrides[get_db] = override_get_db
 LOGIN_PATH = "/login"
 
 class UserTestCase(unittest.TestCase):
+    """Principal test case
+
+    Args:
+        unittest ([type]): [description]
+    """
 
     @classmethod
     def setUpClass(cls):
+        """configuracion inicial de cada test
+        """
         cls.client = TestClient(app)
         cls.user_test = {
             "name": "user_test",
@@ -45,14 +56,23 @@ class UserTestCase(unittest.TestCase):
 
     @staticmethod
     def disconnect():
+        """
+        instrucciones cuando todos los test del test case se hayan ejecutado
+        """
         db = TestingSessionLocal()
         Base.metadata.drop_all(bind=db.get_bind())
 
     @classmethod
     def tearDownClass(cls):
+        """
+        instrucciones cuando todos los test del test case se hayan ejecutado
+        """
         cls.disconnect()
 
     def test_create_user(self):
+        """
+        testea crear un nuevo usuario
+        """
         response = self.client.post(
             "/user/",
             json=self.user_test,
@@ -85,7 +105,7 @@ class UserTestCase(unittest.TestCase):
             LOGIN_PATH,
             data={
                 'username': self.user_test['email'],
-                'password': 'jakia2'
+                'password': self.user_test['password'] + "xaszc123"
             },
         )
 
@@ -172,10 +192,12 @@ class UserTestCase(unittest.TestCase):
 
     def test_enroll_to_course(self):
 
-        u1 = models.User(name='u1', email='u1@test.com', password='hashx1')
-        u2 = models.User(name='u2', email='u2@test.com', password='hashx2')
-        u3 = models.User(name='u3', email='u3@test.com', password='hashx3')
-
+        u1 = models.User(name='u1', email='u1@test.com', password=self.user_test['password'] + "s1")
+        u2 = models.User(name='u2', email='u2@test.com', password=self.user_test['password'] + "s2")
+        u3 = models.User(name='u3', email='u3@test.com', password=self.user_test['password'] + "s3")
+        
+        u1.__repr__()
+        
         db = next(override_get_db())
         db.add_all([u1, u2, u3])
         db.commit()
@@ -192,6 +214,9 @@ class UserTestCase(unittest.TestCase):
         self.assertEqual(response.json(), 'done')
         inscription = db.query(models.Inscription).filter_by(
             user_id=u1.id, course_id=course_id)
+        
+        inscription.first().__repr__()
+        
         self.assertTrue(inscription)
 
         # enroll by email
@@ -257,6 +282,9 @@ class UserTestCase(unittest.TestCase):
 
         db = next(override_get_db())
         course = db.query(models.Course).first()
+        
+        course.__repr__()
+
         course_id = course.id
 
         self.client.post(
@@ -393,6 +421,34 @@ class UserTestCase(unittest.TestCase):
         self.client.delete(
             f'course/1',
         )
+
+        self.client.post(
+            LOGIN_PATH,
+            data={
+                'username': self.user_test['email'],
+                'password': self.user_test['password'] + "xaszc123"
+            },
+        )
+
+        token_raises = create_access_token(data={"subx": 'abc@fasdsad.com'})
+
+        try:
+            verify_token(token_raises, Exception('test exception'))
+        except Exception:
+            ...
+        try:
+            verify_token('invalidtoken', Exception('test exception'))
+        except Exception:
+            ...
+
+        next(get_db())
+
+        db = next(override_get_db())
+        try:
+            show(-1, db)
+        except Exception:
+            ...
+
 
 # sort test
 
